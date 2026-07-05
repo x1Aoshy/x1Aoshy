@@ -68,7 +68,7 @@ export default function Stack() {
       <Reveal>
         <span className="section-tag">Stack</span>
         <h2 className="section-title">Frameworks y tecnologías que manejo</h2>
-        <p className="max-w-2xl text-ink-300">
+        <p className="section-desc">
           Del backend al frontend, pasando por el diseño: estas son las
           herramientas con las que construyo.
         </p>

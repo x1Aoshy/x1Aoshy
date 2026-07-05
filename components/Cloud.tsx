@@ -7,11 +7,25 @@ import Reveal from "./Reveal";
 type CloudTab = {
   id: string;
   label: string;
-  icon: string;
+  color: string;
   file: string;
   description: string;
   code: { text: string; className?: string }[][];
 };
+
+// Punto de color de marca con pulso
+function StatusDot({ color, ping = false }: { color: string; ping?: boolean }) {
+  return (
+    <span className="relative flex h-2 w-2 shrink-0">
+      {ping && (
+        <span
+          className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-50 ${color}`}
+        />
+      )}
+      <span className={`relative inline-flex h-2 w-2 rounded-full ${color}`} />
+    </span>
+  );
+}
 
 // Helpers de color para los snippets
 const kw = "text-grape";        // palabras clave
@@ -24,7 +38,7 @@ const tabs: CloudTab[] = [
   {
     id: "k8s",
     label: "Kubernetes",
-    icon: "☸️",
+    color: "bg-[#326CE5]",
     file: "deployment.yaml",
     description:
       "Orquestación de contenedores: deployments, servicios y escalado automático de aplicaciones.",
@@ -50,7 +64,7 @@ const tabs: CloudTab[] = [
   {
     id: "aws",
     label: "AWS EC2",
-    icon: "🟠",
+    color: "bg-[#FF9900]",
     file: "launch-ec2.sh",
     description:
       "Instancias EC2 en AWS: creación, configuración de seguridad y despliegue de aplicaciones.",
@@ -72,7 +86,7 @@ const tabs: CloudTab[] = [
   {
     id: "gcp",
     label: "Google Cloud",
-    icon: "🔵",
+    color: "bg-[#4285F4]",
     file: "compute-engine.sh",
     description:
       "Compute Engine (VMs de Google Cloud): máquinas virtuales, redes y despliegues en GCP.",
@@ -95,10 +109,26 @@ const tabs: CloudTab[] = [
 ];
 
 const services = [
-  { icon: "☸️", name: "Kubernetes", detail: "Orquestación de contenedores" },
-  { icon: "🟠", name: "AWS EC2", detail: "Instancias y despliegues" },
-  { icon: "🔵", name: "GCP Compute Engine", detail: "VMs en Google Cloud" },
-  { icon: "🐳", name: "Docker", detail: "Contenedores y imágenes" },
+  {
+    color: "bg-[#326CE5]",
+    name: "Kubernetes",
+    detail: "Orquestación de contenedores",
+  },
+  {
+    color: "bg-[#FF9900]",
+    name: "AWS EC2",
+    detail: "Instancias y despliegues",
+  },
+  {
+    color: "bg-[#4285F4]",
+    name: "GCP Compute Engine",
+    detail: "VMs en Google Cloud",
+  },
+  {
+    color: "bg-[#2496ED]",
+    name: "Docker",
+    detail: "Contenedores e imágenes",
+  },
 ];
 
 export default function Cloud() {
@@ -109,7 +139,7 @@ export default function Cloud() {
       <Reveal>
         <span className="section-tag">Cloud &amp; DevOps</span>
         <h2 className="section-title">Infraestructura en la nube</h2>
-        <p className="max-w-2xl text-ink-300">
+        <p className="section-desc">
           Experiencia práctica con Kubernetes, instancias EC2 de AWS y máquinas
           virtuales de Google Cloud (Compute Engine).
         </p>
@@ -120,13 +150,17 @@ export default function Cloud() {
         <div className="grid content-start gap-4 sm:grid-cols-2 lg:grid-cols-1">
           {services.map((service, i) => (
             <Reveal key={service.name} delay={0.1 + i * 0.08}>
-              <div className="card flex items-center gap-4 p-5">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-ink-700 bg-ink-950 text-xl">
-                  {service.icon}
+              <div className="card flex items-center gap-4 p-4 sm:p-5">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-ink-700 bg-ink-950">
+                  <StatusDot color={service.color} ping />
                 </span>
-                <div>
-                  <p className="font-semibold text-white">{service.name}</p>
-                  <p className="text-sm text-ink-300">{service.detail}</p>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-white sm:text-base">
+                    {service.name}
+                  </p>
+                  <p className="truncate text-xs text-ink-400 sm:text-sm">
+                    {service.detail}
+                  </p>
                 </div>
               </div>
             </Reveal>
@@ -136,18 +170,18 @@ export default function Cloud() {
         {/* Editor de código con pestañas */}
         <Reveal delay={0.2}>
           <div className="overflow-hidden rounded-lg border border-ink-700 bg-ink-900">
-            <div className="flex flex-wrap items-center gap-1 border-b border-ink-700 bg-ink-950 px-3 pt-3">
+            <div className="flex items-center gap-1 overflow-x-auto border-b border-ink-700 bg-ink-950 px-3 pt-3">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActive(tab)}
-                  className={`flex items-center gap-2 rounded-t-md border-x border-t px-4 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-t-md border-x border-t px-3.5 py-2.5 text-[13px] font-medium transition-colors sm:px-4 sm:text-sm ${
                     active.id === tab.id
                       ? "border-ink-700 bg-ink-900 text-white"
                       : "border-transparent text-ink-400 hover:text-ink-200"
                   }`}
                 >
-                  <span aria-hidden>{tab.icon}</span>
+                  <StatusDot color={tab.color} ping={active.id === tab.id} />
                   {tab.label}
                 </button>
               ))}

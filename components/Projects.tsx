@@ -85,7 +85,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
       <Reveal>
         <span className="section-tag">Proyectos</span>
         <h2 className="section-title">Cosas que he construido</h2>
-        <p className="max-w-2xl text-ink-300">
+        <p className="section-desc">
           Una selección de proyectos donde aplico mi stack: del diseño en Figma
           al despliegue en la nube.
         </p>
