@@ -1,33 +1,7 @@
 import Reveal from "./Reveal";
+import type { ExperienceItem } from "@/lib/data";
 
-const items = [
-  {
-    period: "2025 — Presente",
-    title: "Full Stack Junior Developer",
-    place: "Proyectos freelance & personales",
-    description:
-      "Desarrollo de aplicaciones web completas con Java, C#, JavaScript y PHP. Despliegues en AWS (EC2) y Google Cloud (Compute Engine), y contenedores con Docker y Kubernetes.",
-    tags: ["Java", "JavaScript", "AWS", "GCP"],
-  },
-  {
-    period: "2024 — 2025",
-    title: "Desarrollador en formación",
-    place: "Proyectos de práctica intensiva",
-    description:
-      "Un año de experiencia práctica construyendo proyectos reales: APIs REST, aplicaciones de gestión y sitios web. Base sólida en bases de datos SQL y control de versiones con Git.",
-    tags: ["C#", "PHP", "SQL", "Git"],
-  },
-  {
-    period: "2024",
-    title: "Diseño UI/UX",
-    place: "Figma",
-    description:
-      "Diseño de interfaces y prototipos en Figma: wireframes, sistemas de diseño y flujos de usuario centrados en experiencias simples y agradables.",
-    tags: ["Figma", "UI/UX", "Prototipado"],
-  },
-];
-
-export default function Experience() {
+export default function Experience({ items }: { items: ExperienceItem[] }) {
   return (
     <section id="experiencia" className="section-container">
       <Reveal>
@@ -35,12 +9,12 @@ export default function Experience() {
         <h2 className="section-title">Mi recorrido</h2>
       </Reveal>
 
-      <div className="relative mt-12 ml-3 border-l border-ink-700 pl-8 md:ml-6">
+      <div className="relative mt-12 ml-2 border-l border-ink-700 pl-7 sm:ml-3 sm:pl-8 md:ml-6">
         {items.map((item, i) => (
-          <Reveal key={item.title} delay={0.1 + i * 0.12}>
+          <Reveal key={item.id ?? item.title} delay={0.1 + i * 0.12}>
             <div className="relative pb-12 last:pb-0">
               {/* Punto del timeline */}
-              <span className="absolute -left-[39px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full border border-blurple bg-ink-950">
+              <span className="absolute -left-[36px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full border border-blurple bg-ink-950 sm:-left-[39px]">
                 <span className="h-1.5 w-1.5 rounded-full bg-blurple-light" />
               </span>
 
