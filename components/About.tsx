@@ -19,7 +19,7 @@ export default function About() {
 
       <div className="mt-8 grid gap-10 lg:grid-cols-[1.4fr_1fr]">
         <Reveal delay={0.1}>
-          <div className="space-y-4 text-lg leading-relaxed text-ink-200">
+          <div className="space-y-4 text-[15px] leading-relaxed text-ink-300 sm:text-base lg:text-lg">
             <p>
               Soy <strong className="text-white">Hian Chang</strong> (también
               conocido como <span className="text-blurple-light">Aoshy Dev</span>),
