@@ -25,22 +25,22 @@ export default function Navbar() {
 
   return (
     <motion.header
-      initial={{ y: -80, opacity: 0 }}
+      initial={{ y: -64, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-200 ${
         scrolled
-          ? "border-b border-ink-600/50 bg-ink-900/85 backdrop-blur-md"
-          : "bg-transparent"
+          ? "border-ink-700 bg-ink-950/90 backdrop-blur-sm"
+          : "border-transparent bg-transparent"
       }`}
     >
-      <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6 md:px-10">
-        <a href="#inicio" className="group flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blurple to-grape font-mono text-sm font-bold text-white shadow-glow transition-transform duration-300 group-hover:rotate-6 group-hover:scale-110">
+      <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6 md:px-12">
+        <a href="#inicio" className="flex items-center gap-2.5">
+          <span className="flex h-8 w-8 items-center justify-center rounded-md border border-ink-600 bg-ink-900 font-mono text-xs font-bold text-blurple-light">
             HC
           </span>
-          <span className="font-semibold text-white">
-            Hian<span className="text-blurple-light">.dev</span>
+          <span className="font-medium text-white">
+            hian<span className="text-ink-400">.dev</span>
           </span>
         </a>
 
@@ -49,16 +49,16 @@ export default function Navbar() {
             <li key={link.href}>
               <a
                 href={link.href}
-                className="rounded-lg px-3 py-2 text-sm font-medium text-ink-300 transition-colors hover:bg-ink-700 hover:text-white"
+                className="rounded-md px-3 py-2 text-sm text-ink-300 transition-colors hover:text-white"
               >
                 {link.label}
               </a>
             </li>
           ))}
-          <li className="ml-2">
+          <li className="ml-3">
             <a
               href="#contacto"
-              className="rounded-xl bg-blurple px-4 py-2 text-sm font-semibold text-white shadow-glow transition-all hover:bg-blurple-dark hover:shadow-glow-purple"
+              className="rounded-md bg-white px-4 py-2 text-sm font-medium text-ink-950 transition-colors hover:bg-ink-200"
             >
               Contacto
             </a>
@@ -68,27 +68,27 @@ export default function Navbar() {
         <button
           aria-label="Abrir menú"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg text-ink-200 hover:bg-ink-700 md:hidden"
+          className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-md text-ink-200 hover:bg-ink-800 md:hidden"
         >
           <span
-            className={`h-0.5 w-5 bg-current transition-transform ${open ? "translate-y-2 rotate-45" : ""}`}
+            className={`h-px w-5 bg-current transition-transform ${open ? "translate-y-[7px] rotate-45" : ""}`}
           />
-          <span className={`h-0.5 w-5 bg-current transition-opacity ${open ? "opacity-0" : ""}`} />
+          <span className={`h-px w-5 bg-current transition-opacity ${open ? "opacity-0" : ""}`} />
           <span
-            className={`h-0.5 w-5 bg-current transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`}
+            className={`h-px w-5 bg-current transition-transform ${open ? "-translate-y-[7px] -rotate-45" : ""}`}
           />
         </button>
       </nav>
 
       {open && (
-        <div className="border-t border-ink-600/50 bg-ink-900/95 backdrop-blur-md md:hidden">
+        <div className="border-t border-ink-700 bg-ink-950/95 backdrop-blur-sm md:hidden">
           <ul className="flex flex-col gap-1 px-6 py-4">
             {[...links, { href: "#contacto", label: "Contacto" }].map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink-200 hover:bg-ink-700 hover:text-white"
+                  className="block rounded-md px-3 py-2.5 text-sm text-ink-200 hover:bg-ink-800 hover:text-white"
                 >
                   {link.label}
                 </a>

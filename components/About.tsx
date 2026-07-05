@@ -43,16 +43,19 @@ export default function About() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 overflow-hidden rounded-lg border border-ink-700">
           {stats.map((stat, i) => (
-            <Reveal key={stat.label} delay={0.15 + i * 0.1}>
-              <div className="card flex h-full flex-col items-center justify-center gap-1 p-6 text-center">
-                <span className="text-gradient text-4xl font-extrabold">
-                  {stat.value}
-                </span>
-                <span className="text-sm text-ink-300">{stat.label}</span>
-              </div>
-            </Reveal>
+            <div
+              key={stat.label}
+              className={`flex flex-col items-center justify-center gap-1 bg-ink-900 p-6 text-center transition-colors hover:bg-ink-850 ${
+                i % 2 === 0 ? "border-r border-ink-700" : ""
+              } ${i < 2 ? "border-b border-ink-700" : ""}`}
+            >
+              <span className="font-mono text-3xl font-bold text-blurple-light">
+                {stat.value}
+              </span>
+              <span className="text-sm text-ink-300">{stat.label}</span>
+            </div>
           ))}
         </div>
       </div>

@@ -121,7 +121,7 @@ export default function Cloud() {
           {services.map((service, i) => (
             <Reveal key={service.name} delay={0.1 + i * 0.08}>
               <div className="card flex items-center gap-4 p-5">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blurple/20 to-grape/20 text-2xl">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-ink-700 bg-ink-950 text-xl">
                   {service.icon}
                 </span>
                 <div>
@@ -135,16 +135,16 @@ export default function Cloud() {
 
         {/* Editor de código con pestañas */}
         <Reveal delay={0.2}>
-          <div className="card overflow-hidden !p-0 hover:!translate-y-0">
-            <div className="flex flex-wrap items-center gap-1 border-b border-ink-600/50 bg-ink-900/80 px-3 pt-3">
+          <div className="overflow-hidden rounded-lg border border-ink-700 bg-ink-900">
+            <div className="flex flex-wrap items-center gap-1 border-b border-ink-700 bg-ink-950 px-3 pt-3">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActive(tab)}
-                  className={`flex items-center gap-2 rounded-t-lg px-4 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2 rounded-t-md border-x border-t px-4 py-2.5 text-sm font-medium transition-colors ${
                     active.id === tab.id
-                      ? "bg-ink-800 text-white"
-                      : "text-ink-400 hover:bg-ink-800/50 hover:text-ink-200"
+                      ? "border-ink-700 bg-ink-900 text-white"
+                      : "border-transparent text-ink-400 hover:text-ink-200"
                   }`}
                 >
                   <span aria-hidden>{tab.icon}</span>
@@ -161,11 +161,11 @@ export default function Cloud() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.25 }}
               >
-                <div className="flex items-center justify-between border-b border-ink-600/30 px-5 py-2.5">
+                <div className="flex items-center justify-between border-b border-ink-700 px-5 py-2.5">
                   <span className="font-mono text-xs text-ink-400">
                     {active.file}
                   </span>
-                  <span className="rounded-md bg-blurple/15 px-2 py-0.5 text-xs font-medium text-blurple-light">
+                  <span className="rounded border border-blurple/40 px-2 py-0.5 font-mono text-xs text-blurple-light">
                     {active.label}
                   </span>
                 </div>
@@ -185,7 +185,7 @@ export default function Cloud() {
                     </div>
                   ))}
                 </pre>
-                <p className="border-t border-ink-600/30 px-5 py-3 text-sm text-ink-300">
+                <p className="border-t border-ink-700 px-5 py-3 text-sm text-ink-300">
                   {active.description}
                 </p>
               </motion.div>

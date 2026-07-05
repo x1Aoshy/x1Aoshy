@@ -11,23 +11,19 @@ html {
 }
 
 body {
-  @apply bg-ink-900 text-ink-100 antialiased;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(88, 101, 242, 0.15), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(124, 58, 237, 0.08), transparent);
-  background-attachment: fixed;
+  @apply bg-ink-950 text-ink-100 antialiased;
 }
 
 ::selection {
   @apply bg-blurple/40 text-white;
 }
 
-/* Scrollbar estilo Discord */
+/* Scrollbar sobrio */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-ink-900;
+  @apply bg-ink-950;
 }
 ::-webkit-scrollbar-thumb {
   @apply rounded-full bg-ink-600;
@@ -38,37 +34,46 @@ body {
 
 @layer components {
   .section-container {
-    @apply mx-auto w-full max-w-6xl px-6 py-24 md:px-10;
+    @apply w-full px-6 py-24 md:px-12;
   }
 
   .section-title {
-    @apply mb-3 text-3xl font-extrabold tracking-tight text-white md:text-4xl;
+    @apply mb-3 text-3xl font-bold tracking-tight text-white md:text-4xl;
   }
 
   .section-tag {
-    @apply mb-4 inline-block rounded-full border border-blurple/30 bg-blurple/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-blurple-light;
+    @apply mb-5 flex items-center gap-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-blurple-light;
+  }
+
+  .section-tag::before {
+    content: "";
+    @apply block h-px w-8 bg-blurple;
   }
 
   .card {
-    @apply rounded-2xl border border-ink-600/50 bg-ink-800/80 backdrop-blur transition-all duration-300;
+    @apply rounded-lg border border-ink-700 bg-ink-900 transition-colors duration-200;
   }
 
   .card:hover {
-    @apply -translate-y-1 border-blurple/50 shadow-glow;
+    @apply border-ink-500;
+  }
+
+  /* Botón primario estilo Vercel */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-sm font-medium text-ink-950 transition-colors hover:bg-ink-200;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-md border border-ink-600 bg-transparent px-6 py-3 text-sm font-medium text-ink-100 transition-colors hover:border-ink-400 hover:text-white;
   }
 }
 
-/* Gradiente de texto */
-.text-gradient {
-  @apply bg-gradient-to-r from-blurple-light via-blurple to-grape bg-clip-text text-transparent;
-}
-
-/* Línea de grid decorativa del hero */
+/* Grid sutil del hero, sin brillos */
 .hero-grid {
   background-image:
-    linear-gradient(rgba(88, 101, 242, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(88, 101, 242, 0.07) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 40%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 40%, transparent 100%);
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
 }

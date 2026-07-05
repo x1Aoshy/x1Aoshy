@@ -35,13 +35,13 @@ export default function Experience() {
         <h2 className="section-title">Mi recorrido</h2>
       </Reveal>
 
-      <div className="relative mt-12 ml-3 border-l-2 border-ink-600/60 pl-8 md:ml-6">
+      <div className="relative mt-12 ml-3 border-l border-ink-700 pl-8 md:ml-6">
         {items.map((item, i) => (
           <Reveal key={item.title} delay={0.1 + i * 0.12}>
             <div className="relative pb-12 last:pb-0">
               {/* Punto del timeline */}
-              <span className="absolute -left-[41px] top-1.5 flex h-5 w-5 items-center justify-center rounded-full border-2 border-blurple bg-ink-900 shadow-glow">
-                <span className="h-2 w-2 rounded-full bg-blurple-light" />
+              <span className="absolute -left-[39px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full border border-blurple bg-ink-950">
+                <span className="h-1.5 w-1.5 rounded-full bg-blurple-light" />
               </span>
 
               <span className="font-mono text-sm text-blurple-light">
@@ -50,7 +50,7 @@ export default function Experience() {
               <h3 className="mt-1 text-xl font-bold text-white">
                 {item.title}
               </h3>
-              <p className="text-sm font-medium text-grape">{item.place}</p>
+              <p className="font-mono text-sm text-ink-400">{item.place}</p>
               <p className="mt-3 max-w-2xl leading-relaxed text-ink-300">
                 {item.description}
               </p>
@@ -58,7 +58,7 @@ export default function Experience() {
                 {item.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-md bg-ink-800 px-2.5 py-1 font-mono text-xs text-ink-300"
+                    className="rounded border border-ink-700 bg-ink-900 px-2.5 py-1 font-mono text-xs text-ink-300"
                   >
                     {tag}
                   </span>
