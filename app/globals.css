@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ink-950 text-ink-100 antialiased;
+}
+
+::selection {
+  @apply bg-blurple/40 text-white;
+}
+
+/* Scrollbar sobrio */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-ink-950;
+}
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-ink-600;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-ink-500;
+}
+
+@layer components {
+  .section-container {
+    @apply w-full px-6 py-24 md:px-12;
+  }
+
+  .section-title {
+    @apply mb-3 text-3xl font-bold tracking-tight text-white md:text-4xl;
+  }
+
+  .section-tag {
+    @apply mb-5 flex items-center gap-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-blurple-light;
+  }
+
+  .section-tag::before {
+    content: "";
+    @apply block h-px w-8 bg-blurple;
+  }
+
+  .card {
+    @apply rounded-lg border border-ink-700 bg-ink-900 transition-colors duration-200;
+  }
+
+  .card:hover {
+    @apply border-ink-500;
+  }
+
+  /* Botón primario estilo Vercel */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-md bg-white px-6 py-3 text-sm font-medium text-ink-950 transition-colors hover:bg-ink-200;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-md border border-ink-600 bg-transparent px-6 py-3 text-sm font-medium text-ink-100 transition-colors hover:border-ink-400 hover:text-white;
+  }
+}
+
+/* Grid sutil del hero, sin brillos */
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+}
