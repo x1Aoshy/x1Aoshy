@@ -116,40 +116,26 @@ function Login({ onDone }: { onDone: () => void }) {
         onSubmit={submit}
         className="w-full max-w-sm rounded-lg border border-ink-700 bg-ink-900 p-6 sm:p-8"
       >
-        <div className="mb-6 flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded border border-ink-700 bg-ink-950 font-mono text-xs font-semibold text-blurple-light">
-            HC
-          </span>
-          <div>
-            <p className="text-sm font-medium text-white">Panel admin</p>
-            <p className="text-xs text-ink-400">hian.dev</p>
-          </div>
-        </div>
+        <h1 className="mb-6 text-lg font-semibold text-white">Login</h1>
 
-        <label className="label" htmlFor="email">
-          Email
-        </label>
         <input
           id="email"
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="input mb-4"
-          placeholder="tu@email.com"
+          className="input mb-3"
+          placeholder="Email"
         />
 
-        <label className="label" htmlFor="password">
-          Contraseña
-        </label>
         <input
           id="password"
           type="password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="input mb-5"
-          placeholder="••••••••"
+          className="input mb-4"
+          placeholder="Contraseña"
         />
 
         {error && (
@@ -163,7 +149,7 @@ function Login({ onDone }: { onDone: () => void }) {
           disabled={loading}
           className="btn-primary w-full disabled:opacity-60"
         >
-          {loading ? "Entrando…" : "Iniciar sesión"}
+          {loading ? "Entrando…" : "Entrar"}
         </button>
       </form>
     </div>
