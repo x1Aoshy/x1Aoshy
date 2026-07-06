@@ -19,8 +19,13 @@ create table if not exists public.projects (
   tags text[] not null default '{}',
   url text not null default '',
   repo text not null default '',
+  media_url text not null default '',
   sort_order int not null default 0
 );
+
+-- Si la tabla ya existía sin media_url:
+alter table public.projects
+  add column if not exists media_url text not null default '';
 
 create table if not exists public.experience (
   id uuid primary key default gen_random_uuid(),
@@ -54,3 +59,22 @@ create policy "public read experience" on public.experience
   for select using (true);
 create policy "auth write experience" on public.experience
   for all to authenticated using (true) with check (true);
+
+-- ---------- STORAGE: bucket "media" para fotos/videos de proyectos ----------
+insert into storage.buckets (id, name, public)
+values ('media', 'media', true)
+on conflict (id) do nothing;
+
+drop policy if exists "public read media"  on storage.objects;
+drop policy if exists "auth insert media"  on storage.objects;
+drop policy if exists "auth update media"  on storage.objects;
+drop policy if exists "auth delete media"  on storage.objects;
+
+create policy "public read media" on storage.objects
+  for select using (bucket_id = 'media');
+create policy "auth insert media" on storage.objects
+  for insert to authenticated with check (bucket_id = 'media');
+create policy "auth update media" on storage.objects
+  for update to authenticated using (bucket_id = 'media');
+create policy "auth delete media" on storage.objects
+  for delete to authenticated using (bucket_id = 'media');

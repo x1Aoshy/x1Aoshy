@@ -1,6 +1,6 @@
 "use client";
 
-import { LanguageProvider, useI18n } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
 import type { LocalizedContent } from "@/lib/content";
 import LanguageModal from "./LanguageModal";
 import Navbar from "./Navbar";
@@ -12,7 +12,7 @@ import Projects from "./Projects";
 import Experience from "./Experience";
 import Contact from "./Contact";
 
-function Sections({ content }: { content: LocalizedContent }) {
+export default function Portfolio({ content }: { content: LocalizedContent }) {
   const { lang } = useI18n();
   const { profile, projects, experience } = content[lang];
 
@@ -31,13 +31,5 @@ function Sections({ content }: { content: LocalizedContent }) {
         <Contact profile={profile} />
       </div>
     </main>
-  );
-}
-
-export default function Portfolio({ content }: { content: LocalizedContent }) {
-  return (
-    <LanguageProvider>
-      <Sections content={content} />
-    </LanguageProvider>
   );
 }

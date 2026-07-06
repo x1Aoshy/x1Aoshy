@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useI18n, type Lang } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
+import LangSwitch from "./LangSwitch";
 
 const copy = {
   es: {
@@ -29,30 +30,6 @@ const copy = {
     openMenu: "Open menu",
   },
 } as const;
-
-function LangSwitch({ className = "" }: { className?: string }) {
-  const { lang, setLang } = useI18n();
-  return (
-    <div
-      className={`flex items-center overflow-hidden rounded-md border border-ink-700 font-mono text-[11px] ${className}`}
-    >
-      {(["es", "en"] as Lang[]).map((code) => (
-        <button
-          key={code}
-          onClick={() => setLang(code)}
-          aria-pressed={lang === code}
-          className={`px-2 py-1 uppercase transition-colors ${
-            lang === code
-              ? "bg-ink-800 text-white"
-              : "text-ink-400 hover:text-ink-200"
-          }`}
-        >
-          {code}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
