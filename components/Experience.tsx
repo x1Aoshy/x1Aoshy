@@ -70,14 +70,13 @@ export default function Experience({ items }: { items: ExperienceItem[] }) {
                 }}
                 className="absolute -left-[40px] top-7 flex h-4 w-4 items-center justify-center rounded-full border border-blurple bg-ink-950 sm:-left-[44px] md:-left-[48px]"
               >
-                <span className="relative flex h-1.5 w-1.5">
-                  <span
-                    className="absolute inset-0 animate-pulse-ring rounded-full bg-blurple-light motion-reduce:animate-none"
-                    style={{ animationDelay: `${i * 0.45}s` }}
-                    aria-hidden
-                  />
-                  <span className="relative h-1.5 w-1.5 rounded-full bg-blurple-light transition-colors duration-300 group-hover:bg-white" />
-                </span>
+                {/* Halo que irradia desde todo el punto, no solo desde el centro */}
+                <span
+                  className="absolute inset-0 animate-pulse-ring rounded-full bg-blurple/60 motion-reduce:animate-none"
+                  style={{ animationDelay: `${i * 0.45}s` }}
+                  aria-hidden
+                />
+                <span className="relative h-1.5 w-1.5 rounded-full bg-blurple-light transition-colors duration-300 group-hover:bg-white" />
               </motion.span>
 
               {/* Conector horizontal punto → tarjeta */}
