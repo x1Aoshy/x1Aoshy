@@ -3,11 +3,37 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { Profile } from "@/lib/data";
+import { useI18n } from "@/lib/i18n";
+import PulseDot from "./PulseDot";
+
+const copy = {
+  es: {
+    available: "Disponible para nuevos proyectos",
+    greeting: "Hola, soy",
+    viewProjects: "Ver proyectos",
+    talk: "Hablemos",
+    uptime: "1+ año construyendo proyectos reales",
+  },
+  en: {
+    available: "Available for new projects",
+    greeting: "Hi, I'm",
+    viewProjects: "View projects",
+    talk: "Let's talk",
+    uptime: "1+ year building real projects",
+  },
+} as const;
 
 function Typewriter({ roles }: { roles: string[] }) {
   const [roleIndex, setRoleIndex] = useState(0);
   const [text, setText] = useState("");
   const [deleting, setDeleting] = useState(false);
+
+  // Si cambian los roles (p. ej. al cambiar de idioma), reinicia el ciclo
+  useEffect(() => {
+    setRoleIndex(0);
+    setText("");
+    setDeleting(false);
+  }, [roles]);
 
   useEffect(() => {
     const current = roles[roleIndex % roles.length];
@@ -40,6 +66,9 @@ function Typewriter({ roles }: { roles: string[] }) {
 }
 
 export default function Hero({ profile }: { profile: Profile }) {
+  const { lang } = useI18n();
+  const t = copy[lang];
+
   return (
     <section
       id="inicio"
@@ -52,10 +81,10 @@ export default function Hero({ profile }: { profile: Profile }) {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.05 }}
-              className="mb-6 flex items-center gap-2 text-sm text-ink-300"
+              className="mb-6 flex items-center gap-2.5 text-sm text-ink-300"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
-              Disponible para nuevos proyectos
+              <PulseDot color="bg-green-500" className="h-1.5 w-1.5" />
+              {t.available}
             </motion.p>
           )}
 
@@ -65,7 +94,7 @@ export default function Hero({ profile }: { profile: Profile }) {
             transition={{ duration: 0.5, delay: 0.15 }}
             className="text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl"
           >
-            Hola, soy{" "}
+            {t.greeting}{" "}
             <span className="text-blurple-light">{profile.name}</span>
           </motion.h1>
 
@@ -94,19 +123,20 @@ export default function Hero({ profile }: { profile: Profile }) {
             className="mt-8 flex flex-col gap-3 sm:flex-row"
           >
             <a href="#proyectos" className="btn-primary">
-              Ver proyectos
+              {t.viewProjects}
             </a>
             <a href="#contacto" className="btn-secondary">
-              Hablemos
+              {t.talk}
             </a>
           </motion.div>
         </div>
 
-        {/* Tarjeta estilo terminal */}
+        {/* Tarjeta estilo terminal — oculta en móvil para aligerar el hero */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
+          className="hidden md:block"
         >
           <div className="overflow-hidden rounded-lg border border-ink-700 bg-ink-900 font-mono text-[13px] sm:text-sm">
             <div className="flex items-center gap-2 border-b border-ink-700 bg-ink-950 px-4 py-2.5">
@@ -139,7 +169,7 @@ export default function Hero({ profile }: { profile: Profile }) {
               <p>
                 <span className="text-grape">$</span> uptime --coding
               </p>
-              <p className="text-white">1+ año construyendo proyectos reales</p>
+              <p className="text-white">{t.uptime}</p>
               <p>
                 <span className="text-grape">$</span>{" "}
                 <span className="animate-blink">▌</span>

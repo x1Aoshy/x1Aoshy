@@ -1,12 +1,16 @@
 import { getSupabase } from "./supabase";
 import {
   defaultExperience,
+  defaultExperienceEn,
   defaultProfile,
+  defaultProfileEn,
   defaultProjects,
+  defaultProjectsEn,
   type ExperienceItem,
   type Profile,
   type Project,
 } from "./data";
+import type { Lang } from "./i18n";
 
 export type SiteContent = {
   profile: Profile;
@@ -14,17 +18,27 @@ export type SiteContent = {
   experience: ExperienceItem[];
 };
 
+export type LocalizedContent = Record<Lang, SiteContent>;
+
+const defaults: LocalizedContent = {
+  es: {
+    profile: defaultProfile,
+    projects: defaultProjects,
+    experience: defaultExperience,
+  },
+  en: {
+    profile: defaultProfileEn,
+    projects: defaultProjectsEn,
+    experience: defaultExperienceEn,
+  },
+};
+
 // Carga el contenido desde Supabase; si no está configurado o falla,
-// usa el contenido por defecto de lib/data.ts.
-export async function getContent(): Promise<SiteContent> {
+// usa el contenido por defecto de lib/data.ts (en ambos idiomas).
+// El contenido editado desde /admin se muestra tal cual en los dos idiomas.
+export async function getContent(): Promise<LocalizedContent> {
   const supabase = getSupabase();
-  if (!supabase) {
-    return {
-      profile: defaultProfile,
-      projects: defaultProjects,
-      experience: defaultExperience,
-    };
-  }
+  if (!supabase) return defaults;
 
   try {
     const [profileRes, projectsRes, experienceRes] = await Promise.all([
@@ -33,31 +47,32 @@ export async function getContent(): Promise<SiteContent> {
       supabase.from("experience").select("*").order("sort_order"),
     ]);
 
-    const profile: Profile = profileRes.data
-      ? {
-          name: profileRes.data.name || defaultProfile.name,
-          roles: profileRes.data.roles?.length
-            ? profileRes.data.roles
-            : defaultProfile.roles,
-          bio: profileRes.data.bio || defaultProfile.bio,
-          email: profileRes.data.email || defaultProfile.email,
-          github: profileRes.data.github || defaultProfile.github,
-          available: profileRes.data.available ?? defaultProfile.available,
-        }
-      : defaultProfile;
+    const buildProfile = (fallback: Profile): Profile =>
+      profileRes.data
+        ? {
+            name: profileRes.data.name || fallback.name,
+            roles: profileRes.data.roles?.length
+              ? profileRes.data.roles
+              : fallback.roles,
+            bio: profileRes.data.bio || fallback.bio,
+            email: profileRes.data.email || fallback.email,
+            github: profileRes.data.github || fallback.github,
+            available: profileRes.data.available ?? fallback.available,
+          }
+        : fallback;
 
-    return {
-      profile,
-      projects: projectsRes.data?.length ? projectsRes.data : defaultProjects,
+    const build = (lang: Lang): SiteContent => ({
+      profile: buildProfile(defaults[lang].profile),
+      projects: projectsRes.data?.length
+        ? projectsRes.data
+        : defaults[lang].projects,
       experience: experienceRes.data?.length
         ? experienceRes.data
-        : defaultExperience,
-    };
+        : defaults[lang].experience,
+    });
+
+    return { es: build("es"), en: build("en") };
   } catch {
-    return {
-      profile: defaultProfile,
-      projects: defaultProjects,
-      experience: defaultExperience,
-    };
+    return defaults;
   }
 }
