@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Reveal from "./Reveal";
 import type { Project } from "@/lib/data";
 import { useI18n } from "@/lib/i18n";
@@ -62,9 +63,31 @@ function isVideoUrl(url: string): boolean {
   return /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(url);
 }
 
-function BrowserPreview({ project, index }: { project: Project; index: number }) {
+function BrowserPreview({
+  project,
+  index,
+  hovered,
+}: {
+  project: Project;
+  index: number;
+  hovered: boolean;
+}) {
   const variant = previewVariants[index % previewVariants.length];
   const media = project.media_url?.trim();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // El video solo se reproduce mientras la tarjeta tiene hover,
+  // y arranca desde el principio en cada pasada
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (hovered) {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [hovered]);
 
   return (
     <div className="border-b border-ink-700 bg-ink-950 p-5 pb-0">
@@ -110,14 +133,14 @@ function BrowserPreview({ project, index }: { project: Project; index: number })
             </div>
           </div>
 
-          {/* Media real del proyecto: aparece con crossfade en hover */}
+          {/* Media real del proyecto: crossfade + zoom sutil en hover */}
           {media && (
-            <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+            <div className="absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500 group-hover:opacity-100">
               {isVideoUrl(media) ? (
                 <video
+                  ref={videoRef}
                   src={media}
-                  className="h-full w-full object-cover"
-                  autoPlay
+                  className="h-full w-full scale-[1.04] object-cover transition-transform duration-700 group-hover:scale-100"
                   muted
                   loop
                   playsInline
@@ -128,7 +151,7 @@ function BrowserPreview({ project, index }: { project: Project; index: number })
                 <img
                   src={media}
                   alt={project.title}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full scale-[1.04] object-cover transition-transform duration-700 group-hover:scale-100"
                   loading="lazy"
                 />
               )}
@@ -137,6 +160,71 @@ function BrowserPreview({ project, index }: { project: Project; index: number })
         </div>
       </div>
     </div>
+  );
+}
+
+function ProjectCard({
+  project,
+  index,
+  t,
+}: {
+  project: Project;
+  index: number;
+  t: (typeof copy)[keyof typeof copy];
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <article
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="group flex h-full flex-col overflow-hidden rounded-lg border border-ink-700 bg-ink-900 transition-colors duration-200 hover:border-ink-500"
+    >
+      <BrowserPreview project={project} index={index} hovered={hovered} />
+
+      <div className="flex flex-1 flex-col p-6">
+        <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-blurple-light">
+          {project.title}
+        </h3>
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-300">
+          {project.description}
+        </p>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded border border-ink-700 bg-ink-950 px-2 py-0.5 font-mono text-xs text-ink-300"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <div className="mt-5 flex gap-4 border-t border-ink-700 pt-4 text-sm font-medium">
+          {project.url && (
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blurple-light transition-colors hover:text-white"
+            >
+              {t.demo}
+            </a>
+          )}
+          {project.repo && (
+            <a
+              href={project.repo}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ink-300 transition-colors hover:text-white"
+            >
+              {t.code}
+            </a>
+          )}
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -159,52 +247,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
             delay={0.08 + i * 0.08}
             className="h-full"
           >
-            <article className="group flex h-full flex-col overflow-hidden rounded-lg border border-ink-700 bg-ink-900 transition-colors duration-200 hover:border-ink-500">
-              <BrowserPreview project={project} index={i} />
-
-              <div className="flex flex-1 flex-col p-6">
-                <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-blurple-light">
-                  {project.title}
-                </h3>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-300">
-                  {project.description}
-                </p>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded border border-ink-700 bg-ink-950 px-2 py-0.5 font-mono text-xs text-ink-300"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="mt-5 flex gap-4 border-t border-ink-700 pt-4 text-sm font-medium">
-                  {project.url && (
-                    <a
-                      href={project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blurple-light transition-colors hover:text-white"
-                    >
-                      {t.demo}
-                    </a>
-                  )}
-                  {project.repo && (
-                    <a
-                      href={project.repo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-ink-300 transition-colors hover:text-white"
-                    >
-                      {t.code}
-                    </a>
-                  )}
-                </div>
-              </div>
-            </article>
+            <ProjectCard project={project} index={i} t={t} />
           </Reveal>
         ))}
       </div>

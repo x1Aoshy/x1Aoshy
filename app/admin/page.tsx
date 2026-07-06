@@ -58,6 +58,7 @@ const copy = {
       urlPh: "https://… (o sube un archivo)",
       upload: "Subir archivo",
       uploading: "Subiendo…",
+      optimizing: "Optimizando imagen…",
       uploadingHint: "puede tardar con videos — no cierres la pestaña",
       uploaded: "Archivo subido ✓ — recuerda darle a Guardar",
       tooBig:
@@ -124,6 +125,7 @@ const copy = {
       urlPh: "https://… (or upload a file)",
       upload: "Upload file",
       uploading: "Uploading…",
+      optimizing: "Optimizing image…",
       uploadingHint: "videos can take a while — keep this tab open",
       uploaded: "File uploaded ✓ — remember to hit Save",
       tooBig:
@@ -174,6 +176,40 @@ function isVideoUrl(url: string): boolean {
 
 // Límite de subida por archivo del plan gratuito de Supabase Storage
 const MAX_UPLOAD_MB = 50;
+
+// Ancho máximo con el que se guardan las imágenes: la tarjeta del
+// proyecto se ve pequeña, así que 1280px sobra incluso en retina.
+const MAX_IMAGE_WIDTH = 1280;
+
+// Comprime imágenes en el navegador antes de subirlas: redimensiona a
+// MAX_IMAGE_WIDTH y recodifica a WebP. Los gif animados y svg se dejan
+// tal cual (el canvas perdería la animación / el vector). Si algo falla
+// o no mejora el peso, se sube el archivo original.
+async function compressImage(file: File): Promise<File> {
+  if (!file.type.startsWith("image/")) return file;
+  if (file.type === "image/gif" || file.type === "image/svg+xml") return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, MAX_IMAGE_WIDTH / bitmap.width);
+    const width = Math.round(bitmap.width * scale);
+    const height = Math.round(bitmap.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/webp", 0.82),
+    );
+    if (!blob || blob.size >= file.size) return file;
+    const name = file.name.replace(/\.\w+$/, "") + ".webp";
+    return new File([blob], name, { type: "image/webp" });
+  } catch {
+    return file;
+  }
+}
 
 // Purga la caché de la home al instante (la revalidación de 60s queda
 // como respaldo si esta llamada falla)
@@ -365,18 +401,23 @@ function MediaField({
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  async function handleFile(file: File) {
+  async function handleFile(original: File) {
     setError("");
-    const sizeMb = file.size / (1024 * 1024);
-    // Aviso inmediato antes de intentar nada: el límite de Supabase
-    if (sizeMb > MAX_UPLOAD_MB) {
-      setError(`${t.tooBig} (${sizeMb.toFixed(1)} MB).`);
-      return;
-    }
-    setUploading(`${t.uploading} ${file.name} (${sizeMb.toFixed(1)} MB)`);
     // try/catch + finally: pase lo que pase, el botón se libera y
     // el motivo real del fallo se muestra en rojo
     try {
+      // Comprime la imagen en el navegador antes de subirla
+      setUploading(t.optimizing);
+      const file = await compressImage(original);
+
+      const sizeMb = file.size / (1024 * 1024);
+      // Aviso inmediato antes de intentar nada: el límite de Supabase
+      if (sizeMb > MAX_UPLOAD_MB) {
+        setError(`${t.tooBig} (${sizeMb.toFixed(1)} MB).`);
+        return;
+      }
+      setUploading(`${t.uploading} ${file.name} (${sizeMb.toFixed(1)} MB)`);
+
       const supabase = getSupabase()!;
       const ext = file.name.split(".").pop()?.toLowerCase() ?? "bin";
       const path = `projects/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
