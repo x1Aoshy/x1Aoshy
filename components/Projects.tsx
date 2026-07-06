@@ -58,8 +58,14 @@ function previewBar(project: Project): string {
   return project.title.toLowerCase().replace(/\s+/g, "-") + ".dev";
 }
 
+function isVideoUrl(url: string): boolean {
+  return /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(url);
+}
+
 function BrowserPreview({ project, index }: { project: Project; index: number }) {
   const variant = previewVariants[index % previewVariants.length];
+  const media = project.media_url?.trim();
+
   return (
     <div className="border-b border-ink-700 bg-ink-950 p-5 pb-0">
       {/* Ventana de navegador simulada */}
@@ -72,27 +78,62 @@ function BrowserPreview({ project, index }: { project: Project; index: number })
             {previewBar(project)}
           </span>
         </div>
-        <div className="space-y-2.5 p-4">
-          {variant.lines.map((line, i) => (
-            <div
-              key={i}
-              className={`h-2 rounded-full ${line.color}`}
-              style={{ width: line.width }}
-            />
-          ))}
+
+        <div className="relative">
+          {/* Esqueleto: se desvanece en hover si hay media */}
           <div
-            className="grid gap-2 pt-1"
-            style={{
-              gridTemplateColumns: `repeat(${Math.min(variant.blocks, 3)}, 1fr)`,
-            }}
+            className={`space-y-2.5 p-4 ${
+              media
+                ? "transition-opacity duration-500 group-hover:opacity-0"
+                : ""
+            }`}
           >
-            {Array.from({ length: variant.blocks }).map((_, i) => (
+            {variant.lines.map((line, i) => (
               <div
                 key={i}
-                className="h-10 rounded border border-ink-700 bg-ink-850"
+                className={`h-2 rounded-full ${line.color}`}
+                style={{ width: line.width }}
               />
             ))}
+            <div
+              className="grid gap-2 pt-1"
+              style={{
+                gridTemplateColumns: `repeat(${Math.min(variant.blocks, 3)}, 1fr)`,
+              }}
+            >
+              {Array.from({ length: variant.blocks }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-10 rounded border border-ink-700 bg-ink-850"
+                />
+              ))}
+            </div>
           </div>
+
+          {/* Media real del proyecto: aparece con crossfade en hover */}
+          {media && (
+            <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+              {isVideoUrl(media) ? (
+                <video
+                  src={media}
+                  className="h-full w-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={media}
+                  alt={project.title}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

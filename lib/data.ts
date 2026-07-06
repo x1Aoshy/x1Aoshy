@@ -17,6 +17,8 @@ export type Project = {
   tags: string[];
   url: string;
   repo: string;
+  // Imagen, gif o video que se muestra al hacer hover en la tarjeta
+  media_url?: string;
   sort_order?: number;
 };
 
