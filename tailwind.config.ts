@@ -54,6 +54,7 @@ const config: Config = {
       animation: {
         blink: "blink 1s step-end infinite",
         marquee: "marquee 30s linear infinite",
+        "pulse-ring": "pulse-ring 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite",
       },
       keyframes: {
         blink: {
@@ -63,6 +64,12 @@ const config: Config = {
         marquee: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
+        },
+        // Halo que crece y se desvanece sin saltos: llega a opacidad 0
+        // antes de reiniciar, así el pulso no "parpadea" al cortarse.
+        "pulse-ring": {
+          "0%": { transform: "scale(1)", opacity: "0.7" },
+          "70%, 100%": { transform: "scale(2.4)", opacity: "0" },
         },
       },
     },

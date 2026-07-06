@@ -71,6 +71,73 @@ export const defaultProjects: Project[] = [
   },
 ];
 
+// Versión en inglés del contenido por defecto. Si el contenido viene de
+// Supabase (editado desde /admin) se muestra tal cual en ambos idiomas.
+export const defaultProfileEn: Profile = {
+  ...defaultProfile,
+  roles: [
+    "Full Stack Developer",
+    "Cloud Enthusiast",
+    "UI/UX with Figma",
+    "Aoshy Dev",
+  ],
+  bio: "Junior Full Stack developer with hands-on experience in Java, C#, JavaScript and PHP. I work with AWS and Google Cloud, and I love building efficient, easy-to-use solutions.",
+};
+
+export const defaultProjectsEn: Project[] = [
+  {
+    title: "Cloud Dashboard",
+    description:
+      "Control panel to monitor EC2 instances and Compute Engine VMs in real time, with metrics and alerts.",
+    tags: ["Next.js", "TypeScript", "AWS", "Tailwind"],
+    url: "https://aoshy.dev",
+    repo: "https://github.com/x1Aoshy",
+  },
+  {
+    title: "E-commerce REST API",
+    description:
+      "Java backend with authentication, product catalog and payment gateway, deployed on Kubernetes.",
+    tags: ["Java", "Spring", "Kubernetes", "Docker"],
+    url: "https://aoshy.dev",
+    repo: "https://github.com/x1Aoshy",
+  },
+  {
+    title: "Management App",
+    description:
+      "C# / .NET web application for inventory management with reports, user roles and a SQL database.",
+    tags: ["C#", ".NET", "SQL", "Figma"],
+    url: "https://aoshy.dev",
+    repo: "https://github.com/x1Aoshy",
+  },
+];
+
+export const defaultExperienceEn: ExperienceItem[] = [
+  {
+    period: "2025 — Present",
+    title: "Full Stack Junior Developer",
+    place: "Freelance & personal projects",
+    description:
+      "Building complete web applications with Java, C#, JavaScript and PHP. Deployments on AWS (EC2) and Google Cloud (Compute Engine), plus containers with Docker and Kubernetes.",
+    tags: ["Java", "JavaScript", "AWS", "GCP"],
+  },
+  {
+    period: "2024 — 2025",
+    title: "Developer in training",
+    place: "Intensive practice projects",
+    description:
+      "A year of hands-on experience building real projects: REST APIs, management apps and websites. Solid foundation in SQL databases and version control with Git.",
+    tags: ["C#", "PHP", "SQL", "Git"],
+  },
+  {
+    period: "2024",
+    title: "UI/UX Design",
+    place: "Figma",
+    description:
+      "Interface and prototype design in Figma: wireframes, design systems and user flows focused on simple, pleasant experiences.",
+    tags: ["Figma", "UI/UX", "Prototyping"],
+  },
+];
+
 export const defaultExperience: ExperienceItem[] = [
   {
     period: "2025 — Presente",

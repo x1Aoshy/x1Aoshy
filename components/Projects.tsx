@@ -1,5 +1,25 @@
+"use client";
+
 import Reveal from "./Reveal";
 import type { Project } from "@/lib/data";
+import { useI18n } from "@/lib/i18n";
+
+const copy = {
+  es: {
+    tag: "Proyectos",
+    title: "Cosas que he construido",
+    desc: "Una selección de proyectos donde aplico mi stack: del diseño en Figma al despliegue en la nube.",
+    demo: "Ver demo →",
+    code: "Código",
+  },
+  en: {
+    tag: "Projects",
+    title: "Things I've built",
+    desc: "A selection of projects where I apply my stack: from Figma designs to cloud deployments.",
+    demo: "View demo →",
+    code: "Code",
+  },
+} as const;
 
 // Estilos de preview que rotan según el índice del proyecto
 const previewVariants = [
@@ -80,18 +100,18 @@ function BrowserPreview({ project, index }: { project: Project; index: number })
 }
 
 export default function Projects({ projects }: { projects: Project[] }) {
+  const { lang } = useI18n();
+  const t = copy[lang];
+
   return (
     <section id="proyectos" className="section-container">
       <Reveal>
-        <span className="section-tag">Proyectos</span>
-        <h2 className="section-title">Cosas que he construido</h2>
-        <p className="section-desc">
-          Una selección de proyectos donde aplico mi stack: del diseño en Figma
-          al despliegue en la nube.
-        </p>
+        <span className="section-tag">{t.tag}</span>
+        <h2 className="section-title">{t.title}</h2>
+        <p className="section-desc">{t.desc}</p>
       </Reveal>
 
-      <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid gap-5 sm:gap-6 md:mt-12 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project, i) => (
           <Reveal
             key={project.id ?? project.title}
@@ -128,7 +148,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
                       rel="noopener noreferrer"
                       className="text-blurple-light transition-colors hover:text-white"
                     >
-                      Ver demo →
+                      {t.demo}
                     </a>
                   )}
                   {project.repo && (
@@ -138,7 +158,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
                       rel="noopener noreferrer"
                       className="text-ink-300 transition-colors hover:text-white"
                     >
-                      Código
+                      {t.code}
                     </a>
                   )}
                 </div>

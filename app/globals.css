@@ -11,7 +11,7 @@ html {
 }
 
 body {
-  @apply bg-ink-950 text-ink-100 antialiased;
+  @apply overflow-x-clip bg-ink-950 text-ink-100 antialiased;
 }
 
 ::selection {
@@ -34,7 +34,7 @@ body {
 
 @layer components {
   .section-container {
-    @apply w-full px-5 py-16 sm:px-8 md:px-12 md:py-24;
+    @apply w-full px-5 py-12 sm:px-8 sm:py-16 md:px-12 md:py-24;
   }
 
   .section-title {
