@@ -324,21 +324,25 @@ function MediaField({
   async function handleFile(file: File) {
     setUploading(true);
     setError("");
-    const supabase = getSupabase()!;
-    const ext = file.name.split(".").pop()?.toLowerCase() ?? "bin";
-    const path = `projects/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error: uploadError } = await supabase.storage
-      .from("media")
-      .upload(path, file, { cacheControl: "3600" });
-    if (uploadError) {
-      console.error(uploadError);
-      setError(t.error);
+    // try/catch + finally: pase lo que pase, el botón se libera y
+    // el motivo real del fallo se muestra en rojo
+    try {
+      const supabase = getSupabase()!;
+      const ext = file.name.split(".").pop()?.toLowerCase() ?? "bin";
+      const path = `projects/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from("media")
+        .upload(path, file, { cacheControl: "3600" });
+      if (uploadError) throw uploadError;
+      const { data } = supabase.storage.from("media").getPublicUrl(path);
+      onChange(data.publicUrl);
+    } catch (err) {
+      console.error(err);
+      const detail = err instanceof Error ? err.message : String(err);
+      setError(`${t.error} (${detail})`);
+    } finally {
       setUploading(false);
-      return;
     }
-    const { data } = supabase.storage.from("media").getPublicUrl(path);
-    onChange(data.publicUrl);
-    setUploading(false);
   }
 
   return (
