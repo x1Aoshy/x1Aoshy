@@ -1,6 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { Session } from "@supabase/supabase-js";
 import { getSupabase } from "@/lib/supabase";
 import type { ExperienceItem, Profile, Project } from "@/lib/data";
@@ -18,13 +26,14 @@ const copy = {
     panel: "Panel admin",
     viewSite: "Ver web",
     signOut: "Salir",
-    footer: "Los cambios se reflejan en la web en ~1 minuto (revalidación).",
+    footer: "Los cambios se aplican en la web al instante al guardar.",
     loading: "Cargando…",
     newItem: "Nuevo elemento",
     save: "Guardar",
     delete: "Eliminar",
     add: "+ Añadir",
-    saved: "Guardado ✓",
+    saved: "Cambios aplicados ✓",
+    deleted: "Eliminado ✓",
     saveError: "Error al guardar. Revisa la consola.",
     profile: {
       name: "Nombre",
@@ -49,6 +58,10 @@ const copy = {
       urlPh: "https://… (o sube un archivo)",
       upload: "Subir archivo",
       uploading: "Subiendo…",
+      uploadingHint: "puede tardar con videos — no cierres la pestaña",
+      uploaded: "Archivo subido ✓ — recuerda darle a Guardar",
+      tooBig:
+        "El archivo supera el límite de 50 MB de Supabase. Comprime el video o usa un gif más ligero",
       remove: "Quitar",
       error:
         "Error al subir. ¿Ejecutaste el SQL del bucket \"media\"? Revisa la consola.",
@@ -79,13 +92,14 @@ const copy = {
     panel: "Admin panel",
     viewSite: "View site",
     signOut: "Sign out",
-    footer: "Changes show up on the site in ~1 minute (revalidation).",
+    footer: "Changes go live on the site instantly when you save.",
     loading: "Loading…",
     newItem: "New item",
     save: "Save",
     delete: "Delete",
     add: "+ Add",
-    saved: "Saved ✓",
+    saved: "Changes applied ✓",
+    deleted: "Deleted ✓",
     saveError: "Error while saving. Check the console.",
     profile: {
       name: "Name",
@@ -110,6 +124,10 @@ const copy = {
       urlPh: "https://… (or upload a file)",
       upload: "Upload file",
       uploading: "Uploading…",
+      uploadingHint: "videos can take a while — keep this tab open",
+      uploaded: "File uploaded ✓ — remember to hit Save",
+      tooBig:
+        "The file exceeds Supabase's 50 MB limit. Compress the video or use a lighter gif",
       remove: "Remove",
       error:
         "Upload failed. Did you run the \"media\" bucket SQL? Check the console.",
@@ -153,6 +171,31 @@ function textToTags(text: string): string[] {
 function isVideoUrl(url: string): boolean {
   return /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(url);
 }
+
+// Límite de subida por archivo del plan gratuito de Supabase Storage
+const MAX_UPLOAD_MB = 50;
+
+// Purga la caché de la home al instante (la revalidación de 60s queda
+// como respaldo si esta llamada falla)
+async function revalidateSite() {
+  try {
+    const supabase = getSupabase();
+    if (!supabase) return;
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) return;
+    await fetch("/api/revalidate", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  } catch {
+    // sin conexión: la web se actualizará con la revalidación periódica
+  }
+}
+
+// Toast de confirmación compartido por todo el panel
+const ToastCtx = createContext<(msg: string) => void>(() => {});
+const useToast = () => useContext(ToastCtx);
 
 function Notice({
   kind,
@@ -317,13 +360,20 @@ function MediaField({
 }) {
   const { lang } = useI18n();
   const t = copy[lang].media;
-  const [uploading, setUploading] = useState(false);
+  const toast = useToast();
+  const [uploading, setUploading] = useState<string | null>(null);
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File) {
-    setUploading(true);
     setError("");
+    const sizeMb = file.size / (1024 * 1024);
+    // Aviso inmediato antes de intentar nada: el límite de Supabase
+    if (sizeMb > MAX_UPLOAD_MB) {
+      setError(`${t.tooBig} (${sizeMb.toFixed(1)} MB).`);
+      return;
+    }
+    setUploading(`${t.uploading} ${file.name} (${sizeMb.toFixed(1)} MB)`);
     // try/catch + finally: pase lo que pase, el botón se libera y
     // el motivo real del fallo se muestra en rojo
     try {
@@ -336,12 +386,13 @@ function MediaField({
       if (uploadError) throw uploadError;
       const { data } = supabase.storage.from("media").getPublicUrl(path);
       onChange(data.publicUrl);
+      toast(t.uploaded);
     } catch (err) {
       console.error(err);
       const detail = err instanceof Error ? err.message : String(err);
       setError(`${t.error} (${detail})`);
     } finally {
-      setUploading(false);
+      setUploading(null);
     }
   }
 
@@ -367,13 +418,24 @@ function MediaField({
         />
         <button
           type="button"
-          disabled={uploading}
+          disabled={uploading !== null}
           onClick={() => fileRef.current?.click()}
           className="btn-secondary shrink-0 !px-4 !py-2 text-xs disabled:opacity-60"
         >
           {uploading ? t.uploading : t.upload}
         </button>
       </div>
+
+      {uploading && (
+        <div className="space-y-1.5">
+          <p className="text-xs text-ink-400">
+            {uploading} — {t.uploadingHint}
+          </p>
+          <div className="h-1 overflow-hidden rounded-full bg-ink-700">
+            <div className="h-full w-full animate-pulse rounded-full bg-blurple" />
+          </div>
+        </div>
+      )}
 
       {error && <Notice kind="error">{error}</Notice>}
 
@@ -413,6 +475,7 @@ function ProfileForm() {
   const supabase = getSupabase()!;
   const { lang } = useI18n();
   const t = copy[lang];
+  const toast = useToast();
   const [profile, setProfile] = useState<Profile>(defaultProfile);
   const [rolesText, setRolesText] = useState(defaultProfile.roles.join(", "));
   const [status, setStatus] = useState<"idle" | "saving" | "ok" | "error">(
@@ -446,7 +509,11 @@ function ProfileForm() {
       available: profile.available,
       updated_at: new Date().toISOString(),
     });
-    setStatus(error ? "error" : "ok");
+    setStatus(error ? "error" : "idle");
+    if (!error) {
+      toast(t.saved);
+      revalidateSite();
+    }
   }
 
   return (
@@ -520,7 +587,6 @@ function ProfileForm() {
         >
           {status === "saving" ? t.profile.saving : t.profile.save}
         </button>
-        {status === "ok" && <Notice kind="ok">{t.saved}</Notice>}
         {status === "error" && <Notice kind="error">{t.saveError}</Notice>}
       </div>
     </form>
@@ -550,6 +616,7 @@ function ListEditor<T extends ListItem>({
   const supabase = getSupabase()!;
   const { lang } = useI18n();
   const t = copy[lang];
+  const toast = useToast();
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string>("");
@@ -578,6 +645,10 @@ function ListEditor<T extends ListItem>({
       : await supabase.from(table).insert(payload);
     if (!error) await load();
     setStatus(error ? "error" : "ok");
+    if (!error) {
+      toast(t.saved);
+      revalidateSite();
+    }
   }
 
   async function deleteItem(item: T) {
@@ -589,6 +660,10 @@ function ListEditor<T extends ListItem>({
     const { error } = await supabase.from(table).delete().eq("id", item.id);
     if (!error) await load();
     setStatus(error ? "error" : "ok");
+    if (!error) {
+      toast(t.deleted);
+      revalidateSite();
+    }
   }
 
   if (loading) return <p className="text-sm text-ink-400">{t.loading}</p>;
@@ -691,6 +766,16 @@ export default function AdminPage() {
   const [session, setSession] = useState<Session | null>(null);
   const [checked, setChecked] = useState(false);
   const [tab, setTab] = useState<Tab>("perfil");
+  const [toastMsg, setToastMsg] = useState<{ id: number; msg: string } | null>(
+    null,
+  );
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = useCallback((msg: string) => {
+    setToastMsg({ id: Date.now(), msg });
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToastMsg(null), 2600);
+  }, []);
 
   useEffect(() => {
     if (!supabase) {
@@ -718,6 +803,7 @@ export default function AdminPage() {
   ];
 
   return (
+    <ToastCtx.Provider value={showToast}>
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-ink-800 bg-ink-950">
         <div className="mx-auto flex h-14 w-full max-w-4xl items-center justify-between px-5 sm:px-8">
@@ -827,6 +913,23 @@ export default function AdminPage() {
           {t.footer}
         </p>
       </main>
+
+      {/* Toast de confirmación */}
+      <AnimatePresence>
+        {toastMsg && (
+          <motion.div
+            key={toastMsg.id}
+            initial={{ opacity: 0, y: 16, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+            transition={{ duration: 0.25, ease: [0.21, 0.47, 0.32, 0.98] }}
+            className="fixed bottom-5 right-5 z-50 rounded-md border border-green-500/40 bg-ink-900 px-4 py-2.5 text-sm font-medium text-green-400 shadow-lg shadow-black/40"
+          >
+            {toastMsg.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+    </ToastCtx.Provider>
   );
 }
