@@ -106,7 +106,7 @@ function Login({ onDone }: { onDone: () => void }) {
       password,
     });
     setLoading(false);
-    if (error) setError("Credenciales incorrectas. Inténtalo de nuevo.");
+    if (error) setError("Incorrect credentials. Please try again.");
     else onDone();
   }
 
@@ -116,26 +116,38 @@ function Login({ onDone }: { onDone: () => void }) {
         onSubmit={submit}
         className="w-full max-w-sm rounded-lg border border-ink-700 bg-ink-900 p-6 sm:p-8"
       >
-        <h1 className="mb-6 text-lg font-semibold text-white">Login</h1>
+        <span className="section-tag">Login</span>
+        <h1 className="text-xl font-bold tracking-tight text-white">
+          Welcome back
+        </h1>
+        <p className="mb-6 mt-1 text-sm text-ink-400">Sign in to continue</p>
 
+        <label className="label" htmlFor="email">
+          Email
+        </label>
         <input
           id="email"
           type="email"
+          autoComplete="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="input mb-3"
-          placeholder="Email"
+          className="input mb-4"
+          placeholder="you@email.com"
         />
 
+        <label className="label" htmlFor="password">
+          Password
+        </label>
         <input
           id="password"
           type="password"
+          autoComplete="current-password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="input mb-4"
-          placeholder="Contraseña"
+          className="input mb-5"
+          placeholder="••••••••"
         />
 
         {error && (
@@ -149,7 +161,7 @@ function Login({ onDone }: { onDone: () => void }) {
           disabled={loading}
           className="btn-primary w-full disabled:opacity-60"
         >
-          {loading ? "Entrando…" : "Entrar"}
+          {loading ? "Signing in…" : "Sign in"}
         </button>
       </form>
     </div>
