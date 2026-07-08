@@ -6,26 +6,30 @@ import { useI18n } from "@/lib/i18n";
 
 const copy = {
   es: {
-    tag: "IA & Automatización",
-    title: "Prompt Specialist & agentes LLM",
-    desc: "Diseño prompts y flujos con agentes de IA para agilizar el trabajo y multiplicar la producción — desde escribir y depurar código hasta automatizar tareas repetitivas en cualquier área.",
-    capsTitle: "Lo que hago con IA",
+    tag: "Ingeniería con IA",
+    title: "Product Engineer con IA",
+    desc: "Estoy adaptado y listo para la nueva forma de construir. Diseño y creo soluciones apoyándome en agentes de IA para agilizar el trabajo y multiplicar la producción en cualquier aspecto.",
+    manifestoLead: "Escribir código a mano y entender la lógica sigue importando",
+    manifestoBody:
+      ", pero en el futuro gran parte de eso lo hará la IA. El valor real está en diseñar y resolver problemas. Seamos creadores, no repetidores:",
+    manifestoHighlight: "sé el ingeniero, no el obrero.",
+    capsTitle: "Cómo trabajo con IA",
     caps: [
       {
-        title: "Prompt Engineering",
-        body: "Prompts precisos y reutilizables: few-shot, chain-of-thought, roles y plantillas que sacan resultados consistentes del modelo.",
+        title: "Diseño de soluciones",
+        body: "Pienso el problema y la arquitectura primero; la IA acelera la ejecución, yo decido el qué y el porqué.",
       },
       {
         title: "Agentes & workflows",
-        body: "Agentes que leen, escriben y ejecutan: automatizo tareas encadenando herramientas, memoria y llamadas a funciones.",
+        body: "Agentes que leen, escriben y ejecutan: automatizo tareas encadenando herramientas, memoria y funciones.",
       },
       {
         title: "Multi-modelo",
-        body: "Elijo el modelo según el caso y el costo — open source local o API en la nube — y combino varios en un mismo pipeline.",
+        body: "Elijo el modelo según el caso y el costo — open source local o API en la nube — y combino varios en un pipeline.",
       },
       {
-        title: "Productividad real",
-        body: "Uso la IA para escribir código, documentar, refactorizar y depurar más rápido, sin perder el control de la calidad.",
+        title: "Criterio & calidad",
+        body: "Reviso, depuro y guío lo que genera la IA: entiendo la lógica para mantener el control de la calidad.",
       },
     ],
     modelsTitle: "Modelos y herramientas que uso",
@@ -39,26 +43,30 @@ const copy = {
     ],
   },
   en: {
-    tag: "AI & Automation",
-    title: "Prompt Specialist & LLM agents",
-    desc: "I design prompts and agent workflows to speed up work and multiply output — from writing and debugging code to automating repetitive tasks in any area.",
-    capsTitle: "What I do with AI",
+    tag: "Engineering with AI",
+    title: "Product Engineer with AI",
+    desc: "I'm adapted and ready for the new way of building. I design and create solutions, leaning on AI agents to speed up work and multiply output in any area.",
+    manifestoLead: "Coding by hand and understanding the logic still matters",
+    manifestoBody:
+      ", but in the future much of it will be handed to AI. The real value is in designing and solving problems. Let's be creators, not repeaters:",
+    manifestoHighlight: "be the engineer, not the construction worker.",
+    capsTitle: "How I work with AI",
     caps: [
       {
-        title: "Prompt Engineering",
-        body: "Precise, reusable prompts: few-shot, chain-of-thought, roles and templates that get consistent results from the model.",
+        title: "Solution design",
+        body: "I think through the problem and architecture first; AI speeds up execution, I decide the what and the why.",
       },
       {
         title: "Agents & workflows",
-        body: "Agents that read, write and run: I automate tasks by chaining tools, memory and function calls.",
+        body: "Agents that read, write and run: I automate tasks by chaining tools, memory and functions.",
       },
       {
         title: "Multi-model",
         body: "I pick the model per use case and cost — local open source or cloud API — and combine several in one pipeline.",
       },
       {
-        title: "Real productivity",
-        body: "I use AI to write code, document, refactor and debug faster, without losing control over quality.",
+        title: "Judgment & quality",
+        body: "I review, debug and guide what AI produces: I understand the logic to keep control over quality.",
       },
     ],
     modelsTitle: "Models & tools I use",
@@ -97,7 +105,20 @@ export default function AI() {
         <p className="section-desc">{t.desc}</p>
       </Reveal>
 
-      <div className="mt-8 grid gap-6 md:mt-12 lg:grid-cols-[1.3fr_1fr] lg:gap-8">
+      {/* Manifiesto */}
+      <Reveal delay={0.08}>
+        <blockquote className="mt-8 rounded-lg border border-blurple/30 bg-blurple/5 p-5 sm:p-6">
+          <p className="text-[15px] leading-relaxed text-ink-200 sm:text-base">
+            <span className="font-medium text-white">{t.manifestoLead}</span>
+            {t.manifestoBody}{" "}
+            <span className="font-semibold text-blurple-light">
+              {t.manifestoHighlight}
+            </span>
+          </p>
+        </blockquote>
+      </Reveal>
+
+      <div className="mt-8 grid gap-6 md:mt-10 lg:grid-cols-[1.3fr_1fr] lg:gap-8">
         {/* Capacidades */}
         <div>
           <Reveal>
