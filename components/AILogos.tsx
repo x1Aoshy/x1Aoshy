@@ -51,12 +51,13 @@ export function OpenAIMark({ className, style }: MarkProps) {
   );
 }
 
-// DeepSeek — silueta de ballena estilizada
+// DeepSeek — silueta de ballena estilizada, más clara y compacta
 export function DeepSeekMark({ className, style }: MarkProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} style={style} fill="currentColor" aria-hidden>
-      <path d="M2 12.5c2.6-2.7 6.4-3.8 9.6-2.7 1.1-1.6 3-2.5 5-2.3-.7.8-1 1.9-.8 2.9 1-.6 2.2-.7 3.2-.3-1.4.7-2 2.3-1.6 3.7.3 1.1-.1 2.3-1 3-2.3 1.9-5.4 2.6-8.3 2C6.5 18 4 15.8 2.9 13c-.1-.2-.5-.3-.9-.5Z" />
-      <circle cx="15.5" cy="11" r="0.9" fill="#0E0F10" />
+      <path d="M20.5 5.2c-.4 1.8-1.6 3-3.3 3.7-1.6.6-3.2.5-4.8.7-2.6.3-4.6 1.5-5.7 4-.2.5-.4.7-1 .7-1.6-.1-2.8.6-3.5 2 .2-1.7 1.2-2.7 2.8-3.1.5-.1.7-.3.8-.8.5-2.9 2.4-4.6 5.2-5.2 1.3-.3 2.6-.3 3.9-.6 1.9-.4 3.4-1.4 4.4-3.2.1-.2.2-.4.5-.4.3.6.4 1.4.4 2.4Z" />
+      <path d="M6.5 15.8c2.2 1.5 4.6 2 7.2 1.6 2.4-.4 4.3-1.6 5.4-3.9.1-.2.2-.5.6-.5.3 1.7-.6 3.6-2.4 4.7-2.6 1.6-6.6 1.4-9.1-.4-.8-.6-1.4-1.3-1.7-1.1Z" />
+      <circle cx="16.2" cy="6.4" r="1" />
     </svg>
   );
 }
