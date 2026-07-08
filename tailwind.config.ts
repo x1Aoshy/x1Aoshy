@@ -55,6 +55,7 @@ const config: Config = {
         blink: "blink 1s step-end infinite",
         marquee: "marquee 30s linear infinite",
         "pulse-ring": "pulse-ring 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite",
+        "float-slow": "float-slow 11s ease-in-out infinite",
       },
       keyframes: {
         blink: {
@@ -70,6 +71,11 @@ const config: Config = {
         "pulse-ring": {
           "0%": { transform: "scale(1)", opacity: "0.7" },
           "70%, 100%": { transform: "scale(2.4)", opacity: "0" },
+        },
+        // Flotación suave para los holográmas del fondo
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
+          "50%": { transform: "translateY(-16px) rotate(3deg)" },
         },
       },
     },
