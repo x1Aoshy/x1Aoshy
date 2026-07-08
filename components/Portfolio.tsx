@@ -8,6 +8,7 @@ import Hero from "./Hero";
 import About from "./About";
 import Stack from "./Stack";
 import Cloud from "./Cloud";
+import AI from "./AI";
 import Projects from "./Projects";
 import Experience from "./Experience";
 import Contact from "./Contact";
@@ -26,6 +27,7 @@ export default function Portfolio({ content }: { content: LocalizedContent }) {
         <About />
         <Stack />
         <Cloud />
+        <AI />
         <Projects projects={projects} />
         <Experience items={experience} />
         <Contact profile={profile} />
