@@ -36,7 +36,7 @@ export const defaultProfile: Profile = {
   name: "Hian Chang",
   roles: [
     "Full Stack Developer",
-    "Prompt Specialist",
+    "Product Engineer with AI",
     "Cloud Enthusiast",
     "UI/UX con Figma",
     "Aoshy Dev",
@@ -80,7 +80,7 @@ export const defaultProfileEn: Profile = {
   ...defaultProfile,
   roles: [
     "Full Stack Developer",
-    "Prompt Specialist",
+    "Product Engineer with AI",
     "Cloud Enthusiast",
     "UI/UX with Figma",
     "Aoshy Dev",
