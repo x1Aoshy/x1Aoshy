@@ -3,6 +3,13 @@
 import Reveal from "./Reveal";
 import PulseDot from "./PulseDot";
 import { useI18n } from "@/lib/i18n";
+import {
+  ClaudeMark,
+  DeepSeekMark,
+  GeminiMark,
+  MistralMark,
+  OpenAIMark,
+} from "./AILogos";
 
 const copy = {
   es: {
@@ -93,12 +100,40 @@ const models = [
   { name: "Gemini", color: "bg-[#4285F4]" },
 ];
 
+// Holográmas de logos de IA flotando en el fondo de la sección
+const holos = [
+  { Mark: ClaudeMark, cls: "left-[3%] top-[18%] h-24 w-24 text-[#D97757] opacity-[0.11]", delay: "0s" },
+  { Mark: GeminiMark, cls: "right-[4%] top-[12%] h-28 w-28 text-[#4285F4] opacity-[0.12]", delay: "1.6s" },
+  { Mark: OpenAIMark, cls: "left-[47%] top-[40%] h-32 w-32 text-ink-100 opacity-[0.08]", delay: "0.8s" },
+  { Mark: DeepSeekMark, cls: "left-[5%] top-[62%] h-28 w-28 text-[#4D6BFE] opacity-[0.13]", delay: "2.4s" },
+  { Mark: MistralMark, cls: "right-[4%] top-[70%] h-24 w-24 text-[#FF7000] opacity-[0.12]", delay: "1.2s" },
+] as const;
+
+function HoloBackground() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_14%,black_86%,transparent)]"
+      aria-hidden
+    >
+      {holos.map(({ Mark, cls, delay }, i) => (
+        <Mark
+          key={i}
+          className={`absolute animate-float-slow blur-[0.5px] motion-reduce:animate-none ${cls}`}
+          style={{ animationDelay: delay }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function AI() {
   const { lang } = useI18n();
   const t = copy[lang];
 
   return (
-    <section id="ia" className="section-container">
+    <section id="ia" className="relative overflow-hidden section-container">
+      <HoloBackground />
+      <div className="relative z-10">
       <Reveal>
         <span className="section-tag">{t.tag}</span>
         <h2 className="section-title">{t.title}</h2>
@@ -189,6 +224,7 @@ export default function AI() {
             </div>
           </Reveal>
         </div>
+      </div>
       </div>
     </section>
   );
