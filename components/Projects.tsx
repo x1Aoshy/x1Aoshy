@@ -76,18 +76,30 @@ function BrowserPreview({
   const media = project.media_url?.trim();
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // El video solo se reproduce mientras la tarjeta tiene hover,
-  // y arranca desde el principio en cada pasada
+  // En pantallas táctiles no hay hover: el media se muestra siempre
+  const [coarse, setCoarse] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none)");
+    const update = () => setCoarse(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const active = hovered || coarse;
+
+  // El video se reproduce cuando la tarjeta está activa (hover en
+  // escritorio, siempre en móvil) y arranca desde el principio
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    if (hovered) {
-      video.currentTime = 0;
+    if (active) {
+      if (!coarse) video.currentTime = 0;
       video.play().catch(() => {});
     } else {
       video.pause();
     }
-  }, [hovered]);
+  }, [active, coarse]);
 
   return (
     <div className="border-b border-ink-700 bg-ink-950 p-5 pb-0">
@@ -103,12 +115,11 @@ function BrowserPreview({
         </div>
 
         <div className="relative">
-          {/* Esqueleto: se desvanece en hover si hay media */}
+          {/* Esqueleto: se desvanece cuando hay media y la tarjeta
+              está activa (hover en escritorio, siempre en táctil) */}
           <div
-            className={`space-y-2.5 p-4 ${
-              media
-                ? "transition-opacity duration-500 group-hover:opacity-0"
-                : ""
+            className={`space-y-2.5 p-4 transition-opacity duration-500 ${
+              media && active ? "opacity-0" : "opacity-100"
             }`}
           >
             {variant.lines.map((line, i) => (
@@ -133,14 +144,20 @@ function BrowserPreview({
             </div>
           </div>
 
-          {/* Media real del proyecto: crossfade + zoom sutil en hover */}
+          {/* Media real del proyecto: crossfade + zoom sutil al activar */}
           {media && (
-            <div className="absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+            <div
+              className={`absolute inset-0 overflow-hidden transition-opacity duration-500 ${
+                active ? "opacity-100" : "opacity-0"
+              }`}
+            >
               {isVideoUrl(media) ? (
                 <video
                   ref={videoRef}
                   src={media}
-                  className="h-full w-full scale-[1.04] object-cover transition-transform duration-700 group-hover:scale-100"
+                  className={`h-full w-full object-cover transition-transform duration-700 ${
+                    active ? "scale-100" : "scale-[1.04]"
+                  }`}
                   muted
                   loop
                   playsInline
@@ -151,8 +168,11 @@ function BrowserPreview({
                 <img
                   src={media}
                   alt={project.title}
-                  className="h-full w-full scale-[1.04] object-cover transition-transform duration-700 group-hover:scale-100"
+                  className={`h-full w-full object-cover transition-transform duration-700 ${
+                    active ? "scale-100" : "scale-[1.04]"
+                  }`}
                   loading="lazy"
+                  decoding="async"
                 />
               )}
             </div>
