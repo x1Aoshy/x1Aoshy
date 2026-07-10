@@ -4,6 +4,7 @@ import { useI18n } from "@/lib/i18n";
 import type { LocalizedContent } from "@/lib/content";
 import LanguageModal from "./LanguageModal";
 import SideDecor from "./SideDecor";
+import Octo from "./Octo";
 import Navbar from "./Navbar";
 import Hero from "./Hero";
 import About from "./About";
@@ -22,6 +23,7 @@ export default function Portfolio({ content }: { content: LocalizedContent }) {
     <main>
       <LanguageModal />
       <SideDecor />
+      <Octo />
       <Navbar />
       {/* Marco central con líneas verticales finas */}
       <div className="relative z-10 mx-auto max-w-6xl divide-y divide-ink-700/70 bg-ink-950 md:border-x md:border-ink-700/70">

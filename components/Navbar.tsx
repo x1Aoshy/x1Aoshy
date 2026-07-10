@@ -41,12 +41,14 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-ink-800 bg-ink-950">
       <nav className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-5 sm:px-8 md:px-12">
-        <a href="#inicio" className="flex items-center gap-2.5">
-          <span className="flex h-7 w-7 items-center justify-center rounded border border-ink-700 bg-ink-900 font-mono text-[11px] font-semibold text-blurple-light">
-            HC
+        {/* Firma en letra de carta */}
+        <a href="#inicio" className="flex min-w-0 items-baseline gap-2">
+          <span className="whitespace-nowrap font-script text-2xl font-semibold leading-none text-blurple-light">
+            X1Aoshy Dev
           </span>
-          <span className="text-sm font-medium text-white">
-            hian<span className="text-ink-400">.dev</span>
+          <span className="hidden text-ink-500 sm:inline">/</span>
+          <span className="hidden whitespace-nowrap font-script text-xl leading-none text-ink-300 sm:inline">
+            Hian Chang
           </span>
         </a>
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Caveat, Inter, JetBrains_Mono } from "next/font/google";
 import { LanguageProvider } from "@/lib/i18n";
 import "./globals.css";
 
@@ -12,6 +12,13 @@ const inter = Inter({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
+});
+
+// Letra de carta para la marca del header
+const caveat = Caveat({
+  subsets: ["latin"],
+  variable: "--font-script",
   display: "swap",
 });
 
@@ -56,7 +63,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="es"
+      className={`${inter.variable} ${jetbrainsMono.variable} ${caveat.variable}`}
+    >
       <body>
         {/* Idioma global: compartido entre la web y el panel /admin */}
         <LanguageProvider>{children}</LanguageProvider>
