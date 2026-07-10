@@ -52,6 +52,7 @@ const config: Config = {
           "SFMono-Regular",
           "monospace",
         ],
+        script: ["var(--font-script)", "Caveat", "cursive"],
       },
       animation: {
         blink: "blink 1s step-end infinite",
